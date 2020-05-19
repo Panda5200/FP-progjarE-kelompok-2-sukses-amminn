@@ -21,12 +21,13 @@ def clientthread(conn,addr,ms):
         try:  
             message = conn.recv(2048)
             
-            if ord(message) not in (13,3):
+            if ord(message) != 3:
                 if ord(message) in (127,8):
                     text = text[:-1]
                     sys.stdout.write(f"\r{' '*100}\r")
-                    sys.stdout.flush()
-                    sys.stdout.flush()            
+                    sys.stdout.flush()           
+                elif ord(message) == 13:
+                    text = text + '\n'        
                 else:
                     message = message.decode()
                     text = text + message

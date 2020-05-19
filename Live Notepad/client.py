@@ -21,7 +21,7 @@ while True:
     for socks in read_socket:
         if socks == server:
             message = socks.recv(2048).decode()
-            sys.stdout.write(f"\r{' '*100}\r")
+            os.system('cls')
             sys.stdout.flush()
             sys.stdout.write(message)
             sys.stdout.flush()
