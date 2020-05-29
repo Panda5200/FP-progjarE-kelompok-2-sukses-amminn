@@ -24,27 +24,77 @@ from kivymd.uix.navigationdrawer import MDNavigationDrawer, NavigationLayout
 from kivymd.uix.list import OneLineIconListItem, MDList
 from kivy.uix.floatlayout import FloatLayout
 
-
 class LoginPage(Screen):
-   def __init__(self, **kwargs):
+    username = ObjectProperty(None)
+    password = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.toolbar = MDToolbar(pos_hint={'top': 1}, elevation=10, title="Simple Team Collaborative Tools") #toolbar
-        self.toolbar.left_action_items = [
-            ["menu", lambda x: self.nav_drawer.toggle_nav_drawer()]]
-        self.nav_drawer = MDNavigationDrawer(elevation=0)    
-        self.add_widget(self.toolbar)
+
+    def loginbtn(self):
+        self.reset()
+        sm.current = "LoginPage"
+
+    def regbtn(self):
+        self.reset()
+        sm.current = "RegisterPage"
+
+    def reset(self):
+        self.username.text = ""
+        self.password.text = ""
         
+class RegisterPage(Screen):
+    username = ObjectProperty(None)
+    email = ObjectProperty(None)
+    password = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def regisbtn(self):
+        self.reset()
+        sm.current = "RegisterPage"
+
+    def logbtn(self):
+        self.reset()
+        sm.current = "LoginPage"
+
+    def reset(self):
+        self.username.text = ""
+        self.email.text = ""
+        self.password.text = ""
+
+class ScreenM(ScreenManager):
+    pass
+
+kv = Builder.load_file("login.kv")
+
+sm = ScreenM()
+
+
+
 class MainApp(MDApp):
     def build(self):
-        self.screen = Builder.load_file("login.kv")
-        self.screen_manager = ScreenManager()
+        screens = [LoginPage(name="LoginPage"), RegisterPage(name="RegisterPage")]
+        for screen in screens:
+            sm.add_widget(screen)
 
-        self.login_page = LoginPage()
-        screen = Screen(name="LoginPage")
-        screen.add_widget(self.login_page)
-        self.screen_manager.add_widget(screen)
-        return self.screen_manager
+        sm.current = "LoginPage"
+        #self.screen_manager = ScreenManager()
+
+        #self.login_page = LoginPage()
+        #screen = Screen(name="LoginPage")
+        #screen.add_widget(self.login_page)
+        #self.screen_manager.add_widget(screen)
+
+        #self.register_page = RegisterPage()
+        #screen = Screen(name="registerPage")
+        #screen.add_widget(self.register_page)
+        #self.screen_manager.add_widget(screen)
+
+        #self.screen_manager.current = "registerPage"
+
+        return sm
 
 if __name__ == "__main__":
-    MainApp = MainApp()
-    MainApp.run()
+    MainApp().run()

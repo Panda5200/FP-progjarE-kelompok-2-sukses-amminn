@@ -5,6 +5,11 @@
     password: password
 
     FloatLayout:
+        MDToolbar:
+            title: "Simple Team Collaborative Tools"
+            pos_hint: {"top": 1}
+            elevation: 10
+            left_action_items: [["menu", lambda x: app.callback()]]
 
         MDLabel:
             text:"Username: "
@@ -35,17 +40,95 @@
             pos_hint: {"x": 0.45, "top":0.65}
             size_hint: 0.4, 0.15
 
-        MDTextButton:
-            pos_hint:{"x":0.2,"y":0.03}
-            size_hint: 0.6, 0.2
-            font_size: (root.width**2 + root.height**2) / 13**4
-            text: "Register"
+    MDTextButton:
+        pos_hint:{"x":0.2,"y":0.03}
+        size_hint: 0.6, 0.2
+        font_size: (root.width**2 + root.height**2) / 13**4
+        text: "Register"
+        on_release:
+            root.manager.transition.direction = "up"
+            root.regbtn()
 
-        MDFillRoundFlatButton:
-            pos_hint:{"x":0.2,"y":0.2}
-            size_hint: 0.6, 0.2
-            font_size: (root.width**2 + root.height**2) / 13**4
-            text: "Log in"
+    MDFillRoundFlatButton:
+        pos_hint:{"x":0.2,"y":0.2}
+        size_hint: 0.6, 0.2
+        font_size: (root.width**2 + root.height**2) / 13**4
+        text: "Log in"
+        on_release:
+            root.manager.transition.direction = "up"
+            root.loginbtn()
             
+<RegisterPage>:
+    name: "register"
+    username: username
+    password: password
+    email: email
 
+    FloatLayout:
+        MDToolbar:
+            title: "Simple Team Collaborative Tools"
+            pos_hint: {"top": 1}
+            elevation: 10
+            left_action_items: [["menu", lambda x: app.callback()]]
+
+        MDLabel:
+            text:"Username: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.90}
+            size_hint: 0.35, 0.15
+
+        MDTextField:
+            id: username
+            text:"username"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            pos_hint: {"x": 0.45 , "top":0.90}
+            size_hint: 0.4, 0.15
+
+        MDLabel:
+            text:"Password: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.70}
+            size_hint: 0.35, 0.15
+
+        MDTextField:
+            id: password
+            text:"password"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            password: True
+            pos_hint: {"x": 0.45, "top":0.70}
+            size_hint: 0.4, 0.15
+
+        MDLabel:
+            text:"Email: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.50}
+            size_hint: 0.35, 0.15
+
+        MDTextField:
+            id: email
+            text:"email"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            pos_hint: {"x": 0.45, "top":0.50}
+            size_hint: 0.4, 0.15
+
+    MDFillRoundFlatButton:
+        pos_hint:{"x":0.2,"y":0.15}
+        size_hint: 0.6, 0.2
+        font_size: (root.width**2 + root.height**2) / 13**4
+        text: "Create Account"
+        on_release:
+            root.manager.transition.direction = "up"
+            root.regisbtn()
+
+    MDTextButton:
+        pos_hint:{"x":0.2,"y":0.05}
+        size_hint: 0.6, 0.05
+        font_size: (root.width**2 + root.height**2) / 13**4
+        text: "Log In"
+        on_release:
+            root.manager.transition.direction = "up"
+            root.logbtn()
         
