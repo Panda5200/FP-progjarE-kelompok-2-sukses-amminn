@@ -23,6 +23,8 @@ from kivymd.uix.toolbar import MDToolbar
 from kivymd.uix.navigationdrawer import MDNavigationDrawer, NavigationLayout
 from kivymd.uix.list import OneLineIconListItem, MDList
 
+
+from functools import partial
 KV = '''
 
 '''
@@ -54,7 +56,7 @@ class ChatApp(GridLayout):
         self.send = MDRectangleFlatButton(text="Send")
         self.send.bind(on_press=self.send_message)
 
-        self.storage = MDRectangleFlatButton(text="Storage")
+        self.storage = MDRectangleFlatButton(id="storage_button", text="Storage")
 
         self.notepad = MDRectangleFlatButton(text="Notepad")
 
@@ -70,6 +72,28 @@ class ChatApp(GridLayout):
     
     def send_message(self, _):
         print("Send a")
+
+class ChatPage(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.chat_app = ChatApp()
+        self.add_widget(self.chat_app)        
+
+        buttoncallback = partial(self.ChangeScreen, 'StorageScreen')
+        self.chat_app.storage.bind(on_press=buttoncallback)
+
+        buttoncallback = partial(self.ChangeScreen, 'LiveNotepadPage')
+        self.chat_app.notepad.bind(on_press=buttoncallback)
+
+        buttoncallback = partial(self.ChangeScreen, 'TodoListScreen')
+        self.chat_app.to_do_list.bind(on_press=buttoncallback)
+    
+    def ChangeScreen(self, *args):
+        self.parent.transition.direction = 'left'
+        self.parent.current=args[0]
+    
+    # def Tes(self):
+    #     print(self.chat_app.ids)
 
 class MainApp(MDApp):
     def build(self):

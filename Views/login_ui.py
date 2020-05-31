@@ -24,6 +24,8 @@ from kivymd.uix.navigationdrawer import MDNavigationDrawer, NavigationLayout
 from kivymd.uix.list import OneLineIconListItem, MDList
 from kivy.uix.floatlayout import FloatLayout
 
+from storage_view import StorageScreen
+
 class LoginPage(Screen):
     username = ObjectProperty(None)
     password = ObjectProperty(None)
@@ -33,16 +35,16 @@ class LoginPage(Screen):
 
     def loginbtn(self):
         self.reset()
-        sm.current = "LoginPage"
+        self.current = "LoginPage"
 
     def regbtn(self):
         self.reset()
-        sm.current = "RegisterPage"
+        self.current = "RegisterPage"
 
     def reset(self):
         self.username.text = ""
         self.password.text = ""
-        
+
 class RegisterPage(Screen):
     username = ObjectProperty(None)
     email = ObjectProperty(None)
@@ -53,11 +55,11 @@ class RegisterPage(Screen):
 
     def regisbtn(self):
         self.reset()
-        sm.current = "RegisterPage"
+        # sm.current = "RegisterPage"
 
     def logbtn(self):
         self.reset()
-        sm.current = "LoginPage"
+        # sm.current = "LoginPage"
 
     def reset(self):
         self.username.text = ""
@@ -67,10 +69,6 @@ class RegisterPage(Screen):
 class ScreenM(ScreenManager):
     pass
 
-kv = Builder.load_file("login.kv")
-
-sm = ScreenM()
-
 
 
 class MainApp(MDApp):
@@ -79,7 +77,9 @@ class MainApp(MDApp):
         for screen in screens:
             sm.add_widget(screen)
 
-        sm.current = "LoginPage"
+        sm.add_widget(StorageScreen(name ="tes"))
+
+        sm.current = "tes"
         #self.screen_manager = ScreenManager()
 
         #self.login_page = LoginPage()
@@ -97,4 +97,6 @@ class MainApp(MDApp):
         return sm
 
 if __name__ == "__main__":
+    kv = Builder.load_file("login.kv")
+    sm = ScreenM()
     MainApp().run()

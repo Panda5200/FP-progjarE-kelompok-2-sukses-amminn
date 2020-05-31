@@ -1,0 +1,50 @@
+#:import CustomToolbar2 live_notepad_ui.CustomToolbar2
+#:import CustomTextInput live_notepad_ui.CustomTextInput
+
+<CustomToolbar2>:
+    size_hint_y: None
+    height: self.theme_cls.standard_increment
+    padding: "5dp"
+    spacing: "3dp"
+
+    MDIconButton:
+        id: button_1
+        icon: "keyboard-backspace"
+        pos_hint: {"center_y": .5}
+        on_release: 
+            app.root.transition.direction = 'right'
+            app.root.current="ChatPage"
+
+    MDLabel:
+        text: "Notepad Title"
+        pos_hint: {"center_y": .5}
+        size_hint_x: None
+        width: self.texture_size[0]
+        text_size: None, None
+        font_style: 'H6'
+
+    Widget:
+
+<CustomTextInput>:
+
+<LiveNotepadPage>:
+    BoxLayout:
+        orientation: "vertical"
+
+        CustomToolbar2:
+            id: toolbar
+            elevation: 10
+            pos_hint: {"top": 1}
+
+        BoxLayout:
+            orientation: "vertical"
+
+            CustomTextInput:
+                id: myInput
+
+            # canvas:
+            #     Color:
+            #         rgba: app.theme_cls.primary_light
+            #     Rectangle:
+            #         pos: self.pos
+            #         size: self.size
