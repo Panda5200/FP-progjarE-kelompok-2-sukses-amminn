@@ -52,6 +52,9 @@ class ClientThread(threading.Thread):
       _cmd = dataObj.get('cmd')
       if(_cmd == "chat"):
         print('>> ',dataObj.get('sender'),"says:  ", dataObj.get('message'))
+        saved_chat = open(_user+'.txt', 'a')
+        saved_chat.write('>> ' + dataObj.get('sender') + "says:  " +  dataObj.get('message') + '\n')
+        saved_chat.close()
         flushBuffer()
       elif(_cmd == "recv"):
         self.receiveFile(dataObj.get('path'))
@@ -189,6 +192,10 @@ if __name__ == "__main__":
   _user = input("Your Name : ")
   print()
   
+  saved_chat = open(_user+'.txt', 'r')
+ 
+  print(saved_chat.read())
+  saved_chat.close()
   if os.path.exists(_user) == False:
     os.mkdir(_user)
 
@@ -196,9 +203,11 @@ if __name__ == "__main__":
     try:
       syn = str(input())
       arr = syn.split()
-      
+
+     
       if arr[0]=='send':
         x.sendFile(arr[1])
+        
 
     #   elif arr[0]=='uptrack':
     #     x.uptractFolder(arr[1])
@@ -226,4 +235,4 @@ if __name__ == "__main__":
       print('error syntax')
 
   x.join()
-
+  
