@@ -4,7 +4,7 @@ import select
 import os
 from ftplib import FTP
 
-s_add = ('127.0.0.1', 5000)
+s_add = ('127.0.0.1', 5001)
 s_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s_sock.bind(s_add)
@@ -45,11 +45,10 @@ try:
                             cmd = open(baca+".txt", "r")
                             msg = cmd.read()
                             c_sock.send(msg.encode())
-                        elif 'delete' in todo:
+                        elif 'delete' in todo: # masih error -> ftplib.error_perm: 550 File not found
                             cmd = todo.strip('delete ')
-                            for f in cmd:
-                                msg = your.delete(f)
-                                c_sock.send(hmm.encode())
+                            msg = your.delete(cmd)
+                            c_sock.send(msg.encode())
                         elif 'done' in todo:
                             cmd = todo.strip('done ')
                             msg = your.rename(cmd, '[COMPLETED]'+cmd)
