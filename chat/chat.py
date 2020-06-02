@@ -55,6 +55,9 @@ class ClientThread(threading.Thread):
       if(_cmd == "chat"):
         print('>> ',dataObj.get('sender'),"says:  ", dataObj.get('message'))
         self.cb(dataObj.get('sender'), dataObj.get('message'))
+        saved_chat = open(_user+'.txt', 'a')
+        saved_chat.write('>> ' + dataObj.get('sender') + "says:  " +  dataObj.get('message') + '\n')
+        saved_chat.close()
         flushBuffer()
       elif(_cmd == "recv"):
         self.receiveFile(dataObj.get('path'))
