@@ -11,10 +11,12 @@ def flushBuffer():
   sys.stdout.flush()
 
 class ClientThread(threading.Thread):
-  def __init__(self):
+  def __init__(self, *args, **kwargs):
     self.__stop =  False
     self.s = None
-    threading.Thread.__init__(self, target=self.client_thread)
+    self.cb = kwargs.pop('cb')
+    super(ClientThread, self).__init__(target=self.client_thread, *args, **kwargs)
+    # threading.Thread.__init__(self, target=self.client_thread)
 
   def stop(self):
     self.__stop =  True
@@ -52,6 +54,7 @@ class ClientThread(threading.Thread):
       _cmd = dataObj.get('cmd')
       if(_cmd == "chat"):
         print('>> ',dataObj.get('sender'),"says:  ", dataObj.get('message'))
+        self.cb(dataObj.get('sender'), dataObj.get('message'))
         flushBuffer()
       elif(_cmd == "recv"):
         self.receiveFile(dataObj.get('path'))
@@ -182,48 +185,47 @@ class ClientThread(threading.Thread):
       self.s.close()
       print ("File Downloaded")
 
+class ChatService():
+  def __init__(self, **kwargs):
+	  self._user = None
+	  self.cb = None
+	  self.__dict__.update(kwargs)
+	  self.x = ClientThread(
+		  cb = self.cb
+	  )
+	  self.x.start()
+
+  def Exit(self):
+    self.x.stop()
+    print('bye')
+    _data = {
+    	"cmd":"exit",
+			"sender": self._user
+		}
+    __data = json.dumps(_data)
+    self.x.send(str(__data).encode())
+    self.x.join()
+			
+  def SendData(self, syn):
+    _data = {
+			"cmd":"chat",
+			"sender": self._user ,
+			"message": syn
+		}
+    __data = json.dumps(_data)
+    self.x.send(str(__data).encode())
+
+def NoNeed(*args):
+	print(args)
+
 if __name__ == "__main__":
-  x = ClientThread()
-  x.start()
-
-  _user = input("Your Name : ")
-  print()
-  
-  if os.path.exists(_user) == False:
-    os.mkdir(_user)
-
+  cs = ChatService(
+		_user="Foreign",
+		cb=NoNeed
+	)
   while True:
-    try:
-      syn = str(input())
-      arr = syn.split()
-      
-      if arr[0]=='send':
-        x.sendFile(arr[1])
-
-    #   elif arr[0]=='uptrack':
-    #     x.uptractFolder(arr[1])
-
-      elif arr[0]=='exit':
-        x.stop()
-        print('bye')
-        _data = {
-          "cmd":"exit",
-          "sender": _user
-        }
-        __data = json.dumps(_data)
-        x.send(str(__data).encode())
-        break
-      
-      else:
-        _data = {
-          "cmd":"chat",
-          "sender": _user ,
-          "message": syn
-        }
-        __data = json.dumps(_data)
-        x.send(str(__data).encode())
-    except:
-      print('error syntax')
-
-  x.join()
-
+    myInput = input()
+    if myInput.split()[0] == 'exit':
+      cs.Exit()
+    else:
+      cs.SendData(str(myInput))

@@ -31,26 +31,48 @@
         pos_hint: {"center_y": .5}
 
 <TodoItem>:
+    size_hint_y: None
+    height: content.height
+    type_swipe: "hand"
+    # on_swipe_complete: root.on_swipe_complete(root)
 
-    MDBoxLayout:
-        id: box_top
-        spacing: "10dp"
-        adaptive_height: True
-        pos_hint: {"center_y": .5}
-
-        canvas:
-            Color:
-                rgba: app.theme_cls.primary_light
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
+    MDCardSwipeLayerBox:
+        padding: "8dp"
         MDIconButton:
-            icon: root.icon
+            id: delete_btn
+            icon: "trash-can"
             pos_hint: {"center_y": .5}
 
-        MDLabel:
-            text: root.name
+    MDCardSwipeFrontBox:
+        md_bg_color: [0, 1, 0, 1] if root.isComplete else [1, 1, 1, 1]
+        TwoLineAvatarIconListItem:
+            id: content
+            text: root.text
+            secondary_text: root.date
+            _no_ripple_effect: True
+
+            on_size:
+                self.ids._right_container.width = container.width
+                self.ids._right_container.x = container.width
+
+            IconLeftWidget:
+
+            Container:
+                id: container
+
+                MDIconButton:
+                    id: edit_btn
+                    icon: "pencil"
+
+                MDIconButton:
+                    id: complete_btn
+                    icon: "check-box-outline"
+
+        # TwoLineIconListItem:
+        #     id: content
+        #     text: root.text
+        #     secondary_text: root.date
+        #     _no_ripple_effect: True
 
 <TodoListScreen>:
     
@@ -71,7 +93,3 @@
 
             MDList:
                 id: item_warp
-
-                TodoItem:
-                    icon: "plus"
-                    text: "Task 1"

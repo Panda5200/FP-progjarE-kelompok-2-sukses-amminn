@@ -34,12 +34,31 @@ class LoginPage(Screen):
         super().__init__(**kwargs)
 
     def loginbtn(self):
-        self.reset()
-        self.current = "LoginPage"
+        res = self.checkAuth()
+        sm = self.parent
+        if res != False:
+            sm.user = res
+            sm.current = "ChatPage"
 
     def regbtn(self):
         self.reset()
         self.current = "RegisterPage"
+    
+    def checkAuth(self):
+        un = self.username.text.replace(" ", "")
+        pw = self.password.text.replace(" ", "")
+
+        if un == "" or pw == "":
+            return False
+        else:
+            with open("akun.txt", "r") as a_file:
+                for line in a_file:
+                    stripped_line = line.strip()
+                    data = stripped_line.split()
+                    print(data, " ",un," ", pw)
+                    if data[0] == un and data[2] == pw:
+                        return un
+                return False
 
     def reset(self):
         self.username.text = ""
@@ -54,8 +73,14 @@ class RegisterPage(Screen):
         super().__init__(**kwargs)
 
     def regisbtn(self):
+        self.save_akun()
         self.reset()
         # sm.current = "RegisterPage"
+
+    def save_akun (self):
+        fileakun = open("akun.txt", "a")
+        fileakun.write(str(self.username.text) + ' ' + str(self.email.text) + ' ' + str(self.password.text) + "\n")
+        fileakun.close
 
     def logbtn(self):
         self.reset()

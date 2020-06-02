@@ -29,80 +29,99 @@ def uploadFolder(ftp, path):
             print("CWD", "..")
             ftp.cwd("..")
 
-#print('Input user: ') 
-user = 'daus'
-#print('Input password: ')
-pswd = 'abcd1234'
-#print('Input IP FTP: ')
-#ipftp = input()
-
-f = FTP('localhost')
-f.login(user, pswd)
-
 print('Input Action (LIST/RETR/STOR/MKD/PWD/UF/RENAME/CD/DF) + (File Name)')
 
-while True:
-    print('>>', end='')
-    action = input()
-    act1 = 'LIST'               #COMMAND MELIST FILE DAN FOLDER
-    act2 = 'RETR'               #COMMAND DOWNLOAD
-    act3 = 'STOR'               #COMMAND UPLOAD
-    act4 = 'MKD'                #COMMAND MEMBUAT FOLDER
-    act5 = 'PWD'                #COMMAND MENDAPATKAN Present Working Directory
-    act6 = 'UF'                 #COMMAND UPLOAD FOLDER
-    act7 = 'RENAME'             #COMMAND RENAME
-    act8 = 'CD'                 #COMMAND CHANGE DIRECTORY
-    act9 = 'DF'                 #COMMAND DONWLOAD FOLDER
-
-    if action.count(act1) == 1:                                 #LIST DIRECTORY
-        names = f.nlst()                                        
-        print('List of directory: ' + str(names))
-
-    elif action.count(act2) == 1:                               #DOWNLOAD
-        fl = action.replace('RETR ', '')                           
-        f.retrbinary("RETR " + fl, open(fl, 'wb').write)
-
-    elif action.count(act3) == 1:                               #UPLOAD
-        fl = action.replace('STOR ', '')
-        f.storbinary('STOR ' + fl, open(fl, 'rb'))              
-
-    elif action.count(act4) == 1:                               #BUAT DIRECTORY
-        fl = action.replace('MKD ', '')                                           
-        f.mkd(fl)                                               
+class Storage():
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.Connect()
     
-    elif action.count(act5) == 1:                               #PRESENT WORK DIRECTORY
-        print('Current working directory:' + f.pwd())
+    def Connect(self):
+        #print('Input user: ') 
+        user = 'daus'
+        #print('Input password: ')
+        pswd = '123'
+        #print('Input IP FTP: ')
+        #ipftp = input()
 
-    elif action.count(act6) == 1:                               #UPLOAD FOLDER
-        fl = action.replace('UF ', '')
-        f.cwd('/')
-        f.mkd(fl)
-        f.cwd(fl)
-        uploadFolder(f, fl)  
-             
-    elif action.count(act7) == 1:                               #RENAME FILE/FOLDER
-        fl = action.replace('RENAME ', '')
-        toname = input()
-        f.rename(fl, toname)
+        self.f = FTP('localhost')
+        self.f.login(user, pswd)
+    
+    def Disconnect(self):
+        self.f.quit()
 
-    elif action.count(act8) == 1:                               #CHANGE WORKING DIRECTORY
-        fl = action.replace('CD ', '')
-        f.cwd(fl)
+    def StorageMethods(self, actionInput):
+        # print('>>', end='')
+        action = actionInput
+        act1 = 'LIST'               #COMMAND MELIST FILE DAN FOLDER
+        act2 = 'RETR'               #COMMAND DOWNLOAD
+        act3 = 'STOR'               #COMMAND UPLOAD
+        act4 = 'MKD'                #COMMAND MEMBUAT FOLDER
+        act5 = 'PWD'                #COMMAND MENDAPATKAN Present Working Directory
+        act6 = 'UF'                 #COMMAND UPLOAD FOLDER
+        act7 = 'RENAME'             #COMMAND RENAME
+        act8 = 'CD'                 #COMMAND CHANGE DIRECTORY
+        act9 = 'DF'                 #COMMAND DONWLOAD FOLDER
 
-    elif action.count(act9) == 1:                               #DL FOLDER
-        owd = os.getcwd()
-        fl = action.replace('DF ', '')
-        shutil.make_archive('./filezilla/' + fl, 'zip', './filezilla/' + fl)
-        fz = fl + '.zip'                   
-        f.retrbinary("RETR " + fz, open(fz, 'wb').write)
-        f.delete(fz)
-        os.mkdir(fl)
-        with zipfile.ZipFile(fz, 'r') as zip_ref:
-            zip_ref.extractall(os.chdir(fl))
-        os.chdir(owd)
-        os.remove(fz)
+        if action.count(act1) == 1:                                 #LIST DIRECTORY
+            names = self.f.nlst()                                        
+            print('List of directory: ' + str(names))
+            return names
 
-    else:
-        print('Wrong Command')
-        print('Input Action (LIST/RETR/STOR/MKD/PWD/UF/RENAME/CD/DF) + (File Name)')
-f.quit()
+        elif action.count(act2) == 1:                               #DOWNLOAD
+            fl = action.replace('RETR ', '')                           
+            self.f.retrbinary("RETR " + fl, open(fl, 'wb').write)
+
+        elif action.count(act3) == 1:                               #UPLOAD
+            fl = action.replace('STOR ', '')
+            self.f.storbinary('STOR ' + fl, open(fl, 'rb'))              
+
+        elif action.count(act4) == 1:                               #BUAT DIRECTORY
+            fl = action.replace('MKD ', '')                                           
+            self.f.mkd(fl)                                               
+        
+        elif action.count(act5) == 1:                               #PRESENT WORK DIRECTORY
+            res = self.f.pwd()
+            print('Current working directory:' + str(res) )
+            return res
+            
+
+        elif action.count(act6) == 1:                               #UPLOAD FOLDER
+            fl = action.replace('UF ', '')
+            self.f.cwd('/')
+            self.f.mkd(fl)
+            self.f.cwd(fl)
+            uploadFolder(self.f, fl)  
+                
+        elif action.count(act7) == 1:                               #RENAME FILE/FOLDER
+            myAction = action.split()
+            fl = myAction[1]
+            toname = myAction[2]
+            self.f.rename(fl, toname)
+
+        elif action.count(act8) == 1:                               #CHANGE WORKING DIRECTORY
+            fl = action.replace('CD ', '')
+            self.f.cwd(fl)
+
+        elif action.count(act9) == 1:                               #DL FOLDER
+            owd = os.getcwd()
+            fl = action.replace('DF ', '')
+            shutil.make_archive('./filezilla/' + fl, 'zip', './filezilla/' + fl)
+            fz = fl + '.zip'                   
+            self.f.retrbinary("RETR " + fz, open(fz, 'wb').write)
+            self.f.delete(fz)
+            os.mkdir(fl)
+            with zipfile.ZipFile(fz, 'r') as zip_ref:
+                zip_ref.extractall(os.chdir(fl))
+            os.chdir(owd)
+            os.remove(fz)
+
+        else:
+            print('Wrong Command')
+            print('Input Action (LIST/RETR/STOR/MKD/PWD/UF/RENAME/CD/DF) + (File Name)')
+
+if __name__ == "__main__":
+    s = Storage()
+    s.StorageMethods("LIST")
+    s.StorageMethods("RETR tes.txt")
+    s.StorageMethods("STOR login.kv")

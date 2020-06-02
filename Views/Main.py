@@ -3,6 +3,7 @@ import os
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
+from kivy.properties import StringProperty
 
 Builder.load_string(
     """
@@ -37,7 +38,7 @@ for kv_file in os.listdir(KV_DIR):
         Builder.load_string(kv.read())
 
 class ScreenManagement(ScreenManager):
-    pass
+    user = StringProperty()
 
 class MainApp(MDApp):
     def build(self):
