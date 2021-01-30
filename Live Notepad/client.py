@@ -18,6 +18,8 @@ while True:
     if msvcrt.kbhit():
         read_socket.append(sys.stdin)
    
+//tolong diperbaiki
+
     for socks in read_socket:
         if socks == server:
             message = socks.recv(2048).decode()
@@ -28,7 +30,7 @@ while True:
         else:
             message = msvcrt.getch() 
             if message != 1:
-                server.send(message)
+                server.send(message) 
     
             
 server.close()
