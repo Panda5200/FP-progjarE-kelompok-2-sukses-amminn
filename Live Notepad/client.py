@@ -11,6 +11,8 @@ port = 8081
 server.connect((ip_address, port))
 keyboard = ''
 
+//jangan diganti
+
 while True:
     sockets_list = [server]
     
